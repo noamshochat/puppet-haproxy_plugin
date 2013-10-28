@@ -8,37 +8,15 @@ class MCollective::Application::Haproxy<MCollective::Application
   end
 
   def docs
-    puts "Usage: #{$0} [enable|disable|status]"
+    puts "Usage: #{$0} [enable|maintenance|status]"
   end
 
   def main
     mc = rpcclient("haproxy", :chomp => true)
     mc.send(configuration[:command]).each do |resp|
       puts "#{resp[:sender]}:"
-      if resp[:statuscode] == 0
-        responses, statuses = parse_lines(resp[:data][:output])
-        puts responses if responses and ['enable','disable'].include? configuration[:command]
-        puts statuses if statuses and configuration[:command] == 'status'
-      else
-        puts resp[:statusmsg]
-      end
     end
     mc.disconnect
     printrpcstats
-  end
-
-  def parse_lines(output)
-    responses = ""
-    statuses = ""
-    output.each_line do |line|
-      case line
-        when /^\w+:/
-          responses = responses + (sprintf '%-30s', "    #{line}")
-        when /^\w+,/
-          fields = line.split(',')
-          statuses = statuses + (sprintf '%-30s %s', "    #{fields[0]}/#{fields[1]}:", "#{fields[17]}\n")
-      end
-    end
-    [responses, statuses]
   end
 end

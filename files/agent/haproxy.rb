@@ -21,7 +21,7 @@ module MCollective
       private
       def change_status(action)
         message = ''
-        status_file = 'C:\inetpub\wwwroot\Monitor\status.html'
+        status_file = 'C:\inetpub\wwwroot\MonitorSite\status.html'
         case action
           when 'enable'
             message = "OK"
