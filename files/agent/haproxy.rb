@@ -4,7 +4,7 @@ module MCollective
   module Agent
     class Haproxy < RPC::Agent
 
-      metadata  :name        => "Haproxy",
+      metadata  :name        => "haproxy",
                 :description => "Enable or put  backend servers into maintenance mode with changing content on status page of backend server",
                 :author      => "Alon Becker",
                 :license     => "MIT",
