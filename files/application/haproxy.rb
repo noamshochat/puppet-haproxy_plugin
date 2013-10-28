@@ -8,7 +8,7 @@ class MCollective::Application::Haproxy<MCollective::Application
   end
 
   def docs
-    puts "Usage: #{$0} [enable|disable|status"
+    puts "Usage: #{$0} [enable|disable|status]"
   end
 
   def main
