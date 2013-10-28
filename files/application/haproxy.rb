@@ -13,7 +13,7 @@ class MCollective::Application::Haproxy<MCollective::Application
 
   def main
     mc = rpcclient("haproxy", :chomp => true)
-    mc.send(configuration[:command], options).each do |resp|
+    mc.send(configuration[:command]).each do |resp|
       puts "#{resp[:sender]}:"
       if resp[:statuscode] == 0
         responses, statuses = parse_lines(resp[:data][:output])
