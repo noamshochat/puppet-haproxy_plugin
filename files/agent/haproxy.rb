@@ -1,21 +1,26 @@
 require 'mcollective'
+require 'csv'
+require 'net/http'
+require 'uri'
 
 module MCollective
   module Agent
     class Haproxy < RPC::Agent
 
-      metadata  :name        => "haproxy",
-                :description => "Enable or put  backend servers into maintenance mode with changing content on status page of backend server",
-                :author      => "Alon Becker",
-                :license     => "MIT",
-                :version     => "0.1",
-                :url         => "http://etoro.com",
-                :timeout     => 60
-
       ['enable','maintenance'].each do |act|
         action act do
-          change_status act, request
+          change_status act
         end
+      end
+
+      action 'status' do
+        haproxy_stats_url = config.pluginconf['haproxy.stats.url'] || ''
+        if haproxy_stats_url == '' then
+          reply[:status]=1
+          reply[:stderr]='Haproxy stats url is not configured in server.cfg'
+          exit 1
+        end
+        check_status(config.identity, haproxy_stats_url)
       end
 
       private
@@ -25,7 +30,7 @@ module MCollective
         case action
           when 'enable'
             message = "OK"
-          when 'disable'
+          when 'maintenance'
             message = "MAINTENANCE"
         end
         begin
@@ -35,6 +40,20 @@ module MCollective
         end
       end
 
+      def check_status(server_name,haproxy_stats_url)
+        stats = open(haproxy_stats_url)
+        message = 'DOWN'
+        CSV.parse(stats) do |row|
+          if row[1] == server_name then
+            message = row[17]
+          end
+          reply[:msg] = message
+        end
+      end
+
+      def open(url)
+        Net::HTTP.get(URI.parse(url))
+      end
     end
   end
 end

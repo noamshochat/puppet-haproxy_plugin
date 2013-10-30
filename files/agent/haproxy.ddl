@@ -13,3 +13,9 @@ metadata :name        => "haproxy",
            :display_as  => "Return Status"
   end
 end
+
+action "status", :description =>  "Check status of web server from HAProxy stats CSV file" do
+  output :msg,
+         :description => "Return status of updating backend server status page.",
+         :display_as  => "Return Status"
+end
