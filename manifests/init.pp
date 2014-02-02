@@ -6,9 +6,6 @@ class haproxy_plugin (
 
   File {
     ensure => present,
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0644',
   }
 # Put ddl everywhere
   file { "${plugins_dir}/agent/haproxy.ddl":
