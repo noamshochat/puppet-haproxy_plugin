@@ -44,7 +44,7 @@ module MCollective
         stats = open(haproxy_stats_url)
         message = 'DOWN'
         CSV.parse(stats) do |row|
-          if row[1] == server_name then
+          if row[0] !~ /-maint$/ && row[1] == server_name then
             message = row[17]
           end
           reply[:msg] = message
